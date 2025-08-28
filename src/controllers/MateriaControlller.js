@@ -65,9 +65,6 @@ const visualizarUnaMateria = async (req, res) => {
     if (!materia) {
         return res.status(404).json({ msg: "Materia no encontrada" });
     }
-    if (materia.usuario.toString() !== req.usuarioBDD.toString()) {
-        return res.status(403).json({ msg: "No tienes permiso para ver esta materia" });
-    }
 
     return res.status(200).json(materia);
 };

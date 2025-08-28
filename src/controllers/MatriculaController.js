@@ -103,9 +103,6 @@ const visualizarUnaMatricula = async (req, res) => {
     if (!matricula) {
         return res.status(404).json({ msg: "Matrícula no encontrada" });
     }
-    if (matricula.usuario.toString() !== req.usuarioBDD.toString()) {
-        return res.status(403).json({ msg: "No tienes permiso para ver esta matrícula" });
-    }
     return res.status(200).json(matricula);
 };
 

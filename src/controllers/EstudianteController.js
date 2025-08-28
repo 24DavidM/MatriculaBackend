@@ -64,9 +64,7 @@ const visualizarUnEstudiante = async (req, res) => {
     if (!estudiante) {
         return res.status(404).json({ msg: "Estudiante no encontrado" });
     }
-    if (estudiante.usuario.toString() !== req.usuarioBDD.toString()) {
-        return res.status(403).json({ msg: "No tienes permiso para ver este estudiante" });
-    }
+
     return res.status(200).json(estudiante);
 };
 
