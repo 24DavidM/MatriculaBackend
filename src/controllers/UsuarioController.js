@@ -38,7 +38,7 @@ const login = async (req, res) => {
     // Crear Token
     const token = crearTokenJWT(usuarioBDD._id)
 
-    // Respuesta
+    // Respuestas
     res.status(200).json({token,nombre,apellido,email:usuarioEmail,_id})
 }
 
