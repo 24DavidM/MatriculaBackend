@@ -17,6 +17,6 @@ scenarios:
             - json: "$.token"
               as: "token"
       - get:
-          url: "/matricula"
+          url: "/estudiante"
           headers:
             Authorization: "Bearer {{ token }}"

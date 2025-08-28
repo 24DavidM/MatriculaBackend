@@ -20,9 +20,10 @@ const crearMateria = async (req, res) => {
         return res.status(400).json({ msg: "El código debe ser mayor a 0" });
     }
 
-    if (creditosNum < 0) {
-        return res.status(400).json({ msg: "Los créditos deben ser mayores o iguales a 0" });
+    if (creditosNum < 0 || creditosNum > 5) {
+        return res.status(400).json({ msg: "Los créditos deben estar entre 0 y 5" });
     }
+
 
     const codigoExistente = await Materias.findOne({ codigo: codigoNum });
     if (codigoExistente) {
