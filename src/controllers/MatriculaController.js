@@ -91,6 +91,26 @@ const visualizarMatricula = async (req, res) => {
     }
 };
 
+const visualizarUnaMatricula = async (req, res) => {
+    const { id } = req.params;
+    if (!mongoose.isValidObjectId(id)) {
+        return res.status(400).json({ msg: "ID de matrícula no válido" });
+    }
+    const matricula = await Matriculas.findById(id)
+        .populate("estudiante", "nombre apellido cedula")
+        .populate("materia", "nombre codigo creditos")
+        .select("-__v -createdAt -updatedAt");
+    if (!matricula) {
+        return res.status(404).json({ msg: "Matrícula no encontrada" });
+    }
+    if (matricula.usuario.toString() !== req.usuarioBDD.toString()) {
+        return res.status(403).json({ msg: "No tienes permiso para ver esta matrícula" });
+    }
+    return res.status(200).json(matricula);
+};
+
+
+
 const editarMatricula = async (req, res) => {
     const { id } = req.params;
     const { codigo, descripcion, materia } = req.body;
@@ -151,7 +171,7 @@ const editarMatricula = async (req, res) => {
         matricula.creditos = totalCreditos;
 
         await matricula.save();
-        return res.status(200).json({ msg: "Matrícula actualizada correctamente", matricula });
+        return res.status(200).json({ msg: "Matrícula actualizada correctamente",matricula });
     } catch (error) {
         return res.status(500).json({ msg: "Error en el servidor al actualizar la matrícula" });
     }
@@ -185,6 +205,7 @@ const eliminarMatricula = async (req, res) => {
 export {
     crearMatricula,
     visualizarMatricula,
+    visualizarUnaMatricula,
     editarMatricula,
     eliminarMatricula,
 };

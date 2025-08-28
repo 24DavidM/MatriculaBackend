@@ -37,7 +37,7 @@ const crearEstudiante = async (req, res) => {
     try {
         const nuevoEstudiante = new Estudiantes({ ...req.body, usuario: usuarioId });
         await nuevoEstudiante.save();
-        return res.status(201).json({ msg: "Estudiante creado correctamente" });
+        return res.status(201).json({ msg: "Estudiante creado correctamente" },nuevoEstudiante);
     } catch (error) {
         if (error.code === 11000) {
             return res.status(400).json({ msg: "El correo, cédula o teléfono ya está registrado para este usuario" });
@@ -54,6 +54,23 @@ const visualizarEstudiante = async (req, res) => {
         return res.status(500).json({ msg: "Error en el servidor al obtener los estudiantes" });
     }
 };
+
+const visualizarUnEstudiante = async (req, res) => {
+    const { id } = req.params;
+    if (!mongoose.isValidObjectId(id)) {
+        return res.status(400).json({ msg: "ID no válido" });
+    }
+    const estudiante = await Estudiantes.findById(id).select("-createdAt -updatedAt -__v -usuario");
+    if (!estudiante) {
+        return res.status(404).json({ msg: "Estudiante no encontrado" });
+    }
+    if (estudiante.usuario.toString() !== req.usuarioBDD.toString()) {
+        return res.status(403).json({ msg: "No tienes permiso para ver este estudiante" });
+    }
+    return res.status(200).json(estudiante);
+};
+
+
 
 const actualizarEstudiante = async (req, res) => {
     // Obtener datos
@@ -107,7 +124,7 @@ const actualizarEstudiante = async (req, res) => {
         estudiante.cedula = cedula ?? estudiante.cedula;
 
         await estudiante.save();
-        return res.status(200).json({ msg: "Estudiante actualizado correctamente" });
+        return res.status(200).json({ msg: "Estudiante actualizado correctamente" },estudiante);
     } catch (error) {
         if (error.code === 11000) {
             return res.status(400).json({ msg: "El correo, cédula o teléfono ya está registrado para este usuario" });
@@ -147,6 +164,7 @@ const eliminarEstudiante = async (req, res) => {
 export {
     crearEstudiante,
     visualizarEstudiante,
+    visualizarUnEstudiante,
     actualizarEstudiante,
     eliminarEstudiante,
 };

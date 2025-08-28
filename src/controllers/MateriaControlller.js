@@ -55,6 +55,24 @@ const visualizarMateria = async (req, res) => {
     }
 
 }
+
+const visualizarUnaMateria = async (req, res) => {
+    const { id } = req.params;
+    if (!mongoose.isValidObjectId(id)) {
+        return res.status(400).json({ msg: "ID de materia no válido" });
+    }
+    const materia = await Materias.findById(id).select("-createdAt -updatedAt -__v -usuario");
+    if (!materia) {
+        return res.status(404).json({ msg: "Materia no encontrada" });
+    }
+    if (materia.usuario.toString() !== req.usuarioBDD.toString()) {
+        return res.status(403).json({ msg: "No tienes permiso para ver esta materia" });
+    }
+
+    return res.status(200).json(materia);
+};
+
+
 const editarMateria = async (req, res) => {
     const { id } = req.params;
     const { nombre, codigo, descripcion, creditos } = req.body;
@@ -150,6 +168,7 @@ const eliminarMateria = async (req, res) => {
 export {
     crearMateria,
     visualizarMateria,
+    visualizarUnaMateria,
     editarMateria,
     eliminarMateria
 }
