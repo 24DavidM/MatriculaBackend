@@ -1,15 +1,15 @@
 config:
-  target: "http://localhost:3000"
+  target: "https://matriculabackend.onrender.com"
   phases:
-    - duration: 20
-      arrivalRate: 5
+    - duration: 15
+      arrivalRate: 3
 
 scenarios:
   - flow:
       - post:
           url: "/login"
           json:
-            email: "david@example.com"
+            email: "david@gmail.com"
             password: "abcd"
           headers:
             Content-Type: "application/json"
@@ -17,6 +17,6 @@ scenarios:
             - json: "$.token"
               as: "token"
       - get:
-          url: "/auditorio"
+          url: "/matricula"
           headers:
             Authorization: "Bearer {{ token }}"

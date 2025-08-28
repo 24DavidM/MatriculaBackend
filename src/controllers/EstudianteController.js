@@ -16,7 +16,10 @@ const crearEstudiante = async (req, res) => {
         return res.status(401).json({ msg: "Usuario no autenticado" });
     }
 
-    // Verificar duplicados para el usuario actual
+    if (cedula.length !== 10 || telefono.length !== 10) {
+        return res.status(400).json({ msg: "Debe ingresar 10 números en cédula y teléfono" });
+    }
+
     const existe = await Estudiantes.findOne({
         usuario: usuarioId,
         $or: [{ email }, { cedula }, { telefono }],
@@ -34,10 +37,11 @@ const crearEstudiante = async (req, res) => {
         }
     }
 
+
     try {
         const nuevoEstudiante = new Estudiantes({ ...req.body, usuario: usuarioId });
         await nuevoEstudiante.save();
-        return res.status(201).json({ msg: "Estudiante creado correctamente" },nuevoEstudiante);
+        return res.status(201).json({ msg: "Estudiante creado correctamente" }, nuevoEstudiante);
     } catch (error) {
         if (error.code === 11000) {
             return res.status(400).json({ msg: "El correo, cédula o teléfono ya está registrado para este usuario" });
@@ -83,12 +87,16 @@ const actualizarEstudiante = async (req, res) => {
         return res.status(400).json({ msg: "ID no válido" });
     }
 
+
     const estudiante = await Estudiantes.findById(id);
     if (!estudiante) {
         return res.status(404).json({ msg: "Estudiante no encontrado" });
     }
     if (estudiante.usuario.toString() !== req.usuarioBDD.toString()) {
         return res.status(403).json({ msg: "No tienes permiso para actualizar este estudiante" });
+    }
+    if (cedula.length !== 10 || telefono.length !== 10) {
+        return res.status(400).json({ msg: "Debe ingresar 10 números en cédula y teléfono" });
     }
 
     // Verificar duplicados para el usuario actual
@@ -122,7 +130,7 @@ const actualizarEstudiante = async (req, res) => {
         estudiante.cedula = cedula ?? estudiante.cedula;
 
         await estudiante.save();
-        return res.status(200).json({ msg: "Estudiante actualizado correctamente" },estudiante);
+        return res.status(200).json({ msg: "Estudiante actualizado correctamente" }, estudiante);
     } catch (error) {
         if (error.code === 11000) {
             return res.status(400).json({ msg: "El correo, cédula o teléfono ya está registrado para este usuario" });
