@@ -34,11 +34,11 @@ const crearMatricula = async (req, res) => {
         return res.status(403).json({ msg: "No tienes permiso para matricular este estudiante" });
     }
 
-    // Validar si el estudiante ya tiene una matrícula
-    const existeMatricula = await Matriculas.findOne({ estudiante });
-    if (existeMatricula) {
-        return res.status(400).json({ msg: "El estudiante ya tiene una matrícula registrada" });
-    }
+    // // Validar si el estudiante ya tiene una matrícula
+    // const existeMatricula = await Matriculas.findOne({ estudiante });
+    // if (existeMatricula) {
+    //     return res.status(400).json({ msg: "El estudiante ya tiene una matrícula registrada" });
+    // }
 
     // Validar materias y sumar créditos
     let totalCreditos = 0;
