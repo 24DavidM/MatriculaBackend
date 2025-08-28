@@ -1,6 +1,10 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import cors from 'cors'
+import routerUsuario from './routers/UsuarioRouter.js'
+import routerMaterias from './routers/MateriaRouter.js'
+import routerEstudiante from './routers/EstudianteRouter.js'
+import routerMatricula from './routers/MatriculaRouter.js'
 
 // INICIAMOS SERVER
 const app = express()
@@ -18,7 +22,10 @@ app.use(cors())
 app.get('/', (req, res) => {
     res.send("Backend de Gestión de Estudiantes")
 })
-
+app.use(routerUsuario)
+app.use(routerMaterias)
+app.use(routerEstudiante)
+app.use(routerMatricula)
 
 
 // MANEJO DE RUTAS NO ENCONTRADAS
